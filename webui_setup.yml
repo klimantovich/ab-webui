@@ -1,0 +1,28 @@
+---
+
+- name: Setup logstash server
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Logstahs pre-config.
+      set_fact:
+        kibana_elasticsearch_url: "http://10.0.5.10:9200"
+    - name: Rsyslog pre-config.
+      set_fact:
+        rsyslog_server_ip: 10.0.5.10
+
+  tasks:
+    - name: Genarate uniq ID
+      ansible.builtin.copy:
+        dest: "./settings.ini"
+        content: |
+          [general]
+          uniqueID={{ ansible_hostname }}
+
+  roles:
+    - role: roles/apt
+    - role: roles/ntp
+    - role: roles/kibana
+    - role: roles/nginx
+    - role: roles/rsyslog_client

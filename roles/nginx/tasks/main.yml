@@ -1,0 +1,8 @@
+---
+# tasks file for nginx
+- name: Ensure nginx is installed.
+  apt:
+    name: nginx
+    state: present
+
+- include_tasks: vhosts.yml

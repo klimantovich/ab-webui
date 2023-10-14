@@ -1,0 +1,23 @@
+---
+- name: Remove default nginx vhost config file (if configured).
+  file:
+    path: "{{ nginx_default_vhost_path }}"
+    state: absent
+  when: nginx_remove_default_vhost | bool
+  notify: restart nginx
+
+- name: Ensure nginx_vhost_path exists.
+  file:
+    path: "{{ nginx_vhost_path }}"
+    state: directory
+    mode: 0755
+  notify: reload nginx
+
+- name: Add vhost config file.
+  template:
+    src: proxy.conf.j2
+    dest: "{{ nginx_vhost_path }}/proxy.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nginx
